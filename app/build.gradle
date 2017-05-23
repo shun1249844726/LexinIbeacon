@@ -31,4 +31,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile 'com.jakewharton:butterknife:8.6.0'
+    compile 'com.orhanobut:logger:1.15'
+    compile 'com.sdsmdg.tastytoast:tastytoast:0.1.1'
 }

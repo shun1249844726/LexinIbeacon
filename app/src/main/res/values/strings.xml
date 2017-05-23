@@ -3,4 +3,11 @@
     <string name="title_home">设备</string>
     <string name="title_dashboard">更多功能</string>
     <string name="title_notifications">设置</string>
+
+    <string name="major">Major</string>
+    <string name="minor">Minor</string>
+    <string name="uuid">UUID</string>
+    <string name="mac">Mac</string>
+
+
 </resources>

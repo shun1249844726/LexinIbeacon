@@ -1,19 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="horizontal">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/black"
+    android:orientation="horizontal">
+
     <LinearLayout
         android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
         android:layout_weight="1"
-        android:layout_height="match_parent">
+        android:background="@drawable/bg_scan_list_header"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="4dp">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="0.01"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/sp_8"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-21"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/sp_8"/>
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="5"
-        android:layout_height="match_parent">
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="E-Beacon_94E159"
+                android:textColor="@color/white"
+                android:textSize="@dimen/body1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/major"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/caption"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="4dp"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ddd"
+                android:textColor="@color/white"
+                android:textSize="@dimen/body1"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="10dp"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/minor"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/caption"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="4dp"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ddd"
+                android:textColor="@color/white"
+                android:textSize="@dimen/body1"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_launcher"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mac"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/body1"/>
+        </LinearLayout>
 
     </LinearLayout>
 
