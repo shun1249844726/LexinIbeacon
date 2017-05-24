@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.lexinsmart.xushun.lexinibeacon.ui.fragment.ApplicationScenariosFragment;
 import com.lexinsmart.xushun.lexinibeacon.ui.fragment.DeviceFragment;
 import com.lexinsmart.xushun.lexinibeacon.ui.adapter.ViewPagerAdapter;
 
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         adapter.addFragment(DeviceFragment.newInstance("1"));
-        adapter.addFragment(DeviceFragment.newInstance("2"));
+        adapter.addFragment(ApplicationScenariosFragment.newInstance("2"));
         adapter.addFragment(DeviceFragment.newInstance("3"));
 
         viewPager.setAdapter(adapter);
