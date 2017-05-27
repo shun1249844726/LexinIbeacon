@@ -5,12 +5,16 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.lexinsmart.xushun.lexinibeacon"
-        minSdkVersion 14
+        minSdkVersion 18
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        jackOptions {
+            enabled true
+        }
     }
     buildTypes {
         release {
@@ -18,8 +22,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-}
 
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+configurations.all {
+    resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -33,5 +44,11 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.6.0'
     compile 'com.orhanobut:logger:1.15'
     compile 'com.sdsmdg.tastytoast:tastytoast:0.1.1'
+
+
+    //RxAndroidBle
+    compile "com.polidea.rxandroidble:rxandroidble:1.2.2"
+    compile 'com.trello:rxlifecycle:1.0'
+    compile 'com.trello:rxlifecycle-components:1.0'
 }
 

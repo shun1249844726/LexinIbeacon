@@ -3,6 +3,8 @@ package com.lexinsmart.xushun.lexinibeacon;
 import android.app.Application;
 
 import com.orhanobut.logger.Logger;
+import com.polidea.rxandroidble.RxBleClient;
+import com.polidea.rxandroidble.internal.RxBleLog;
 
 /**
  * Created by xushun on 2017/5/23.
@@ -10,6 +12,7 @@ import com.orhanobut.logger.Logger;
 
 public class MyApplication extends Application {
     private String TAG = "LoginDemo";
+    private RxBleClient rxBleClient;
 
     @Override
     public void onCreate() {
@@ -17,5 +20,12 @@ public class MyApplication extends Application {
 
         Logger.init(TAG);
 
+        rxBleClient= RxBleClient.create(getApplicationContext());
+        rxBleClient.setLogLevel(RxBleLog.DEBUG);
+
     }
+    public RxBleClient getRxBleClient() {
+        return rxBleClient;
+    }
+
 }

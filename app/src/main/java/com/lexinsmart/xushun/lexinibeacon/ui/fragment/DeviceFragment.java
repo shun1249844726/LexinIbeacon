@@ -83,7 +83,6 @@ public class DeviceFragment extends Fragment {
 
         @Override
         public void onClick(int position) {
-
         }
     };
 

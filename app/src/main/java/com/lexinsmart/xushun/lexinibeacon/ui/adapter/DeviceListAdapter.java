@@ -39,9 +39,14 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     public DeviceListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.lv_device_scan,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
-        viewHolder.mImageView = (ImageView) view.findViewById(R.id.imgSignalHeader);
-        viewHolder.mTextView = (TextView) view.findViewById(R.id.tvDeviceName);
+        viewHolder.signalHeaderImg = (ImageView) view.findViewById(R.id.imgSignalHeader);
+        viewHolder.tvDeviceName = (TextView) view.findViewById(R.id.tvDeviceName);
         viewHolder.llDeviceListItem = (LinearLayout) view.findViewById(R.id.llDeviceListItem);
+        viewHolder.tvMajor = (TextView) view.findViewById(R.id.tvMajor);
+        viewHolder.tvMinor = (TextView) view.findViewById(R.id.tvMinor);
+        viewHolder.tvPower = (TextView) view.findViewById(R.id.tvPower);
+        viewHolder.tvMac = (TextView) view.findViewById(R.id.tvMac);
+        viewHolder.tvRssi = (TextView) view.findViewById(R.id.tvRssi);
 
         return viewHolder;
     }
@@ -49,24 +54,21 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     @Override
     public void onBindViewHolder(final DeviceListAdapter.ViewHolder holder, final int position) {
 
-        holder.mTextView.setText(mDatas.get(position).getDeviceName());
+        holder.tvDeviceName.setText(mDatas.get(position).getDeviceName());
+        holder.tvMajor.setText(mDatas.get(position).getMajor());
+        holder.tvMinor.setText(mDatas.get(position).getMinor());
+        holder.tvMac.setText(mDatas.get(position).getMac());
+        holder.tvPower.setText(mDatas.get(position).getPower());
+        holder.tvRssi.setText(mDatas.get(position).getRssi());
 
 
         if (mOnItemClickListener != null){
-            holder.itemView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
 
-                    switch (event.getAction()){
-                        case MotionEvent.ACTION_DOWN:
-                            holder.llDeviceListItem.setBackgroundResource(R.drawable.bg_main_tab);
-                            mOnItemClickListener.onClick(position);
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            holder.llDeviceListItem.setBackgroundResource(R.drawable.bg_main_tab_transparent);
-                            break;
-                    }
-                    return true;
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.onClick(position);
+
                 }
             });
         }
@@ -84,8 +86,9 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         public ViewHolder(View itemView) {
             super(itemView);
         }
-        public ImageView mImageView;
-        public TextView mTextView;
+        public ImageView signalHeaderImg;
+        public TextView tvDeviceName;
+        public TextView tvMajor,tvMinor,tvPower,tvMac,tvRssi;
         public LinearLayout llDeviceListItem;
     }
     public interface OnItemClickListener {

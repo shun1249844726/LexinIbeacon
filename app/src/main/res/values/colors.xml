@@ -160,4 +160,10 @@
     <color name="darkblue">#00008B</color> <!--暗蓝色 -->
     <color name="navy">#000080</color> <!--海军色 -->
     <color name="black">#000000</color> <!--黑色 -->
+    
+
+    <color name="colorPrimaryDark2">#448998</color>
+    <color name="gradientstart">#5ca1b0</color>
+    <color name="gradientend">#4e477a</color>
+
 </resources>

@@ -5,11 +5,14 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.lexinsmart.xushun.lexinibeacon.ui.fragment.ApplicationScenariosFragment;
 import com.lexinsmart.xushun.lexinibeacon.ui.fragment.DeviceFragment;
 import com.lexinsmart.xushun.lexinibeacon.ui.adapter.ViewPagerAdapter;
+import com.lexinsmart.xushun.lexinibeacon.ui.fragment.ScanListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,7 +71,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // Title
+        toolbar.setTitle("");
+
+        setSupportActionBar(toolbar);
+
+
 
         mViewPager = (ViewPager) findViewById(R.id.vp_main_content);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -81,10 +93,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        adapter.addFragment(DeviceFragment.newInstance("1"));
-        adapter.addFragment(ApplicationScenariosFragment.newInstance("2"));
-        adapter.addFragment(DeviceFragment.newInstance("3"));
+        adapter.addFragment(ScanListFragment.newInstance("1"));
+        adapter.addFragment(DeviceFragment.newInstance("2"));
+        adapter.addFragment(ApplicationScenariosFragment.newInstance("3r"));
 
         viewPager.setAdapter(adapter);
     }
