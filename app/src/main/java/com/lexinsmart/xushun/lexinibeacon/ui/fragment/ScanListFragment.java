@@ -6,28 +6,35 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lexinsmart.xushun.lexinibeacon.MyApplication;
 import com.lexinsmart.xushun.lexinibeacon.R;
 import com.lexinsmart.xushun.lexinibeacon.model.DeviceInfo;
 import com.lexinsmart.xushun.lexinibeacon.ui.adapter.DeviceListAdapter;
-import com.lexinsmart.xushun.lexinibeacon.utils.iBeaconClass;
+import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.Sorts;
+import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.iBeaconClass;
+import com.lexinsmart.xushun.lexinibeacon.utils.mqtt.MqttV3Service;
 import com.orhanobut.logger.Logger;
 import com.polidea.rxandroidble.RxBleDevice;
 import com.polidea.rxandroidble.RxBleScanResult;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import rx.Subscription;
+
+import static android.provider.ContactsContract.CommonDataKinds.Email.ADDRESS;
+import static android.provider.Telephony.Carriers.PORT;
 
 /**
  * Created by xushun on 2017/5/25.
@@ -117,6 +124,7 @@ public class ScanListFragment extends BasetFragment {
             mAdapter.notifyDataSetChanged();
 
             search_timer.sendEmptyMessageDelayed(0, 500);
+            new Thread(new MqttProcThread()).start();
 
             //Start scan
             subscribeBle(true);
@@ -156,22 +164,16 @@ public class ScanListFragment extends BasetFragment {
             // 扫描时间调度
             switch (scan_timer_select) {
                 case 1:
-                    subscribeBle(true);
-                    mDeviceInfos.clear();
+                    //       subscribeBle(true);
+                    //          mDeviceInfos.clear();
                     break;
 
                 case 3: // 停止扫描(结算)
-                    subscribeBle(false);
+                    //       subscribeBle(false);
 
-//                    mDeviceInfosDis.clear();
-//
-//                    for (DeviceInfo deviceInfo : mDeviceInfos){
-//                        mDeviceInfosDis.add(deviceInfo);
-//                    }
-//                    Logger.d("size:"+mDeviceInfosDis.size()  +" " +mDeviceInfos.size());
-//
-
+                    Collections.sort(mDeviceInfos, new Sorts());
                     mAdapter.notifyDataSetChanged();
+
                     break;
 
                 default:
@@ -192,50 +194,24 @@ public class ScanListFragment extends BasetFragment {
         DeviceInfo deviceInfo = new DeviceInfo();
         iBeaconClass.iBeacon ibeacon = iBeaconClass.fromScanData(rxBleScanResult.getBleDevice().getBluetoothDevice(), rxBleScanResult.getRssi(), rxBleScanResult.getScanRecord());
         if (ibeacon != null) {
+//            Logger.d("ibeacon:"+ibeacon.bluetoothAddress);
+
+
             deviceInfo.setMac(bleDevice.getMacAddress());
             deviceInfo.setMajor("" + ibeacon.major);
             deviceInfo.setMinor("" + ibeacon.minor);
-            deviceInfo.setRssi("" + ibeacon.rssi);
+            deviceInfo.setRssi(ibeacon.rssi);
             deviceInfo.setDeviceName(bleDevice.getName());
+            Logger.d("rxpower:"+ibeacon.txPower);
 
             for (int i = 0; i < mDeviceInfos.size(); i++) {
                 if (address.equals(mDeviceInfos.get(i).getMac())) {
-
-         //           mDeviceInfos.add(i+1,deviceInfo);
                     mDeviceInfos.remove(i);
                     break;
-
                 }
             }
             mDeviceInfos.add(deviceInfo);
         }
-
-//        if (!listDevicesFound.contains(bleDevice)) {
-//            DeviceInfo deviceInfo = new DeviceInfo();
-//            iBeaconClass.iBeacon ibeacon = iBeaconClass.fromScanData(rxBleScanResult.getBleDevice().getBluetoothDevice(),rxBleScanResult.getRssi(),rxBleScanResult.getScanRecord());
-//
-//
-//            if (ibeacon != null){
-//                deviceInfo.setMac(bleDevice.getMacAddress());
-//                deviceInfo.setMajor(""+ibeacon.major);
-//                deviceInfo.setMinor(""+ibeacon.minor);
-//                deviceInfo.setRssi(""+ibeacon.rssi);
-//                deviceInfo.setDeviceName(bleDevice.getName());
-//                mDeviceInfos.add(deviceInfo);
-//                mAdapter.notifyDataSetChanged();
-//            }
-//        }
-//        else {
-//            iBeaconClass.iBeacon ibeacon = iBeaconClass.fromScanData(rxBleScanResult.getBleDevice().getBluetoothDevice(),rxBleScanResult.getRssi(),rxBleScanResult.getScanRecord());
-//            if (ibeacon != null) {
-//
-//                for (int i = 0; i < mDeviceInfos.size(); i++) {
-//                    if (0 == bleDevice.getMacAddress().compareTo(mDeviceInfos.get(i).getMac())) {
-//                        mDeviceInfos.get(i).setRssi("" + ibeacon.rssi);
-//                    }
-//                }
-//            }
-//        }
     }
 
     private void initDatas() {
@@ -253,4 +229,46 @@ public class ScanListFragment extends BasetFragment {
 //        }
 
     }
+
+    public class MqttProcThread implements Runnable {
+
+        int randomid = (int) Math.floor(10000 + Math.random() * 90000);
+
+        @Override
+        public void run() {
+            Message msg = new Message();
+            ArrayList<String> topicList = new ArrayList<String>();
+            topicList.add("ddd");
+            boolean ret = MqttV3Service.connectionMqttServer(myHandler, MyApplication.ADDRESS, MyApplication.PORT, "lexin" + randomid, topicList);
+            if (ret) {
+                msg.what = 1;
+            } else {
+                msg.what = 0;
+            }
+            msg.obj = "strresult";
+            myHandler.sendMessage(msg);
+        }
+    }
+
+    @SuppressWarnings("HandlerLeak")
+    private Handler myHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 1) {
+                Toast.makeText(mContext, "连接成功", Toast.LENGTH_SHORT).show();
+
+            } else if (msg.what == 0) {
+                Toast.makeText(mContext, "连接失败", Toast.LENGTH_SHORT).show();
+            } else if (msg.what == 2) {
+                String strContent = "";
+                strContent += msg.getData().getString("content");
+                System.out.println("strcontent:" + strContent);
+            } else if (msg.what == 3) {
+                if (MqttV3Service.closeMqtt()) {
+                    Toast.makeText(mContext, "断开连接", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    };
 }

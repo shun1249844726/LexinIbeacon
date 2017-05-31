@@ -1,4 +1,4 @@
-package com.lexinsmart.xushun.lexinibeacon.utils;
+package com.lexinsmart.xushun.lexinibeacon.utils.ibeacon;
 
 import android.bluetooth.BluetoothDevice;
 

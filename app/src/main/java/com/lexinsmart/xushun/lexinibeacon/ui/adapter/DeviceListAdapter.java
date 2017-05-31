@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.lexinsmart.xushun.lexinibeacon.R;
 import com.lexinsmart.xushun.lexinibeacon.model.DeviceInfo;
+import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.RssiUtil;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -47,6 +48,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         viewHolder.tvPower = (TextView) view.findViewById(R.id.tvPower);
         viewHolder.tvMac = (TextView) view.findViewById(R.id.tvMac);
         viewHolder.tvRssi = (TextView) view.findViewById(R.id.tvRssi);
+        viewHolder.tvDistance = (TextView) view.findViewById(R.id.tvDistance);
 
         return viewHolder;
     }
@@ -59,7 +61,13 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         holder.tvMinor.setText(mDatas.get(position).getMinor());
         holder.tvMac.setText(mDatas.get(position).getMac());
         holder.tvPower.setText(mDatas.get(position).getPower());
-        holder.tvRssi.setText(mDatas.get(position).getRssi());
+        holder.tvRssi.setText(""+mDatas.get(position).getRssi());
+
+        if (mDatas.get(position).getRssi() != null){
+            Double distance = RssiUtil.getDistance(mDatas.get(position).getRssi());
+            holder.tvDistance.setText(String.valueOf(distance));
+
+        }
 
 
         if (mOnItemClickListener != null){
@@ -88,7 +96,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         }
         public ImageView signalHeaderImg;
         public TextView tvDeviceName;
-        public TextView tvMajor,tvMinor,tvPower,tvMac,tvRssi;
+        public TextView tvMajor,tvMinor,tvPower,tvMac,tvRssi,tvDistance;
         public LinearLayout llDeviceListItem;
     }
     public interface OnItemClickListener {

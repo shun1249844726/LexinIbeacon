@@ -13,6 +13,9 @@ import com.polidea.rxandroidble.internal.RxBleLog;
 public class MyApplication extends Application {
     private String TAG = "LoginDemo";
     private RxBleClient rxBleClient;
+    public static String ADDRESS = "180.76.179.148";
+    public static String PORT = "1883";
+
 
     @Override
     public void onCreate() {
