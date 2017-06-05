@@ -36,7 +36,7 @@ public class MqttV3Service {
             MqttConnectOptions conOptions = new MqttConnectOptions();
 //            conOptions.setUserName(MyApplication.gUserName);
 //            conOptions.setPassword(Pssword.toCharArray());
-            conOptions.setCleanSession(false);
+            conOptions.setCleanSession(true);
 //            char[] ddd = conOptions.getPassword();
 //            System.out.println(ddd);
             client.connect(conOptions);

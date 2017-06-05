@@ -5,7 +5,7 @@ package com.lexinsmart.xushun.lexinibeacon.utils.ibeacon;
  * Created by liuhuichao on 2017/1/17.
  */
 
-public class RssiUtil {
+public class RssiUtil5 {
     //A和n的值，需要根据实际环境进行检测得出
     private static final double A_Value = 66;/**A - 发射端和接收端相隔1米时的信号强度*/
     private static final double n_Value=2.52;/** n - 环境衰减因子*/
@@ -26,6 +26,7 @@ public class RssiUtil {
     static boolean s_chIsFull = false;
     static  int[] s_achBuf = new int[FIFO_NUM];
     public static int Filter(int chVal){
+
         chVal = Math.abs(chVal);
         int  nCnt;
         int nSum;

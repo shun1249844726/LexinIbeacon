@@ -48,5 +48,7 @@ dependencies {
     compile 'com.trello:rxlifecycle:1.0'
     compile 'com.trello:rxlifecycle-components:1.0'
     compile files('libs/com.ibm.micro.client.mqttv3.jar')
-}
+
+
+    compile 'com.alibaba:fastjson:1.1.57.android'}
 
