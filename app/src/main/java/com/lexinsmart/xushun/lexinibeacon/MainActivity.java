@@ -1,6 +1,8 @@
 package com.lexinsmart.xushun.lexinibeacon;
 
+import android.Manifest;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
@@ -13,6 +15,10 @@ import com.lexinsmart.xushun.lexinibeacon.ui.fragment.ApplicationScenariosFragme
 import com.lexinsmart.xushun.lexinibeacon.ui.fragment.DeviceFragment;
 import com.lexinsmart.xushun.lexinibeacon.ui.adapter.ViewPagerAdapter;
 import com.lexinsmart.xushun.lexinibeacon.ui.fragment.ScanListFragment;
+import com.lexinsmart.xushun.lexinibeacon.utils.file.FileUtils;
+import com.tbruyelle.rxpermissions.RxPermissions;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-
         mViewPager = (ViewPager) findViewById(R.id.vp_main_content);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -89,6 +94,26 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(mOnPageChangeListener);
 
         setupViewPager(mViewPager);
+
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(granted -> {
+                    if (granted) {
+                    } else {
+
+                    }
+                });
+
+        String filePath = Environment.getExternalStorageDirectory() + "/bluetoothdata.txt";
+        String filePathKalman = Environment.getExternalStorageDirectory() + "/bluetoothdataKalman.txt";
+        String filePathAve = Environment.getExternalStorageDirectory() + "/bluetoothdataAve.txt";
+        FileUtils.createIfNotExist(filePath);
+        FileUtils.writeString(filePath, "", "utf-8");
+        FileUtils.createIfNotExist(filePathKalman);
+        FileUtils.writeString(filePathKalman, "", "utf-8");
+
+        FileUtils.createIfNotExist(filePathAve);
+        FileUtils.writeString(filePathAve, "", "utf-8");
     }
 
     private void setupViewPager(ViewPager viewPager) {

@@ -50,5 +50,8 @@ dependencies {
     compile files('libs/com.ibm.micro.client.mqttv3.jar')
 
 
-    compile 'com.alibaba:fastjson:1.1.57.android'}
+    compile 'com.alibaba:fastjson:1.1.57.android'
+
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
+}
 

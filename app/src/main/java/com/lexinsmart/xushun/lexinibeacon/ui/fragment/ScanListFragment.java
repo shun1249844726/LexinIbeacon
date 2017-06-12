@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.storage.StorageManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,11 +23,8 @@ import com.lexinsmart.xushun.lexinibeacon.model.BaseStationBean;
 import com.lexinsmart.xushun.lexinibeacon.model.DeviceInfo;
 import com.lexinsmart.xushun.lexinibeacon.ui.adapter.DeviceListAdapter;
 import com.lexinsmart.xushun.lexinibeacon.utils.file.FileUtils;
+import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.KalmanFilter;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.RssiUtil;
-import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.RssiUtil2;
-import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.RssiUtil3;
-import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.RssiUtil4;
-import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.RssiUtil5;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.Sorts;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.iBeaconClass;
 import com.lexinsmart.xushun.lexinibeacon.utils.mqtt.MqttV3Service;
@@ -37,18 +33,15 @@ import com.polidea.rxandroidble.RxBleDevice;
 import com.polidea.rxandroidble.RxBleScanResult;
 import com.sdsmdg.tastytoast.TastyToast;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Subscription;
 
-import static android.provider.ContactsContract.CommonDataKinds.Email.ADDRESS;
-import static android.provider.Telephony.Carriers.PORT;
-import static com.lexinsmart.xushun.lexinibeacon.utils.file.SDCardUtils.getSDCardPath;
 import static com.lexinsmart.xushun.lexinibeacon.utils.file.SDCardUtils.isSDCardEnable;
 
 /**
@@ -63,10 +56,12 @@ public class ScanListFragment extends BasetFragment {
 
     private Subscription scanSubscription;
     RssiUtil rssiUtilD0 = new RssiUtil();
-    RssiUtil2 rssiUtil0C = new RssiUtil2();
-    RssiUtil3 rssiUtil4E = new RssiUtil3();
-    RssiUtil4 rssiUtil47 = new RssiUtil4();
-    RssiUtil5 rssiUtilDF = new RssiUtil5();
+    Map<String, Double> map = new HashMap<String, Double>();
+    KalmanFilter myKalman = new KalmanFilter();
+    boolean firstFlag = false;
+    double initXhat = 0.0;
+    double initP = 1.0;
+
 
     public static ScanListFragment newInstance(String info) {
         Bundle args = new Bundle();
@@ -192,6 +187,7 @@ public class ScanListFragment extends BasetFragment {
                 case 3: // 停止扫描(结算)
                     //       subscribeBle(false);
 
+
                     Collections.sort(mDeviceInfos, new Sorts());
                     mAdapter.notifyDataSetChanged();
 
@@ -211,6 +207,9 @@ public class ScanListFragment extends BasetFragment {
                         baseBean.setRssi(mDeviceInfos.get(i).getRssi());
                         baseBean.setUuid(mDeviceInfos.get(i).getUuid());
                         baseBean.setMac(mDeviceInfos.get(i).getMac());
+                        if (mDeviceInfos.get(i).getMac().equals("78:A5:04:53:1C:47")) {
+                            Logger.d("rrrrsssi:" + mDeviceInfos.get(i).getRssi());
+                        }
 
                         baseBeenList.add(baseBean);
                     }
@@ -220,7 +219,7 @@ public class ScanListFragment extends BasetFragment {
                     String jsonString = JSON.toJSONString(baseStationBean);
                     MqttV3Service.publishMsg(jsonString, 1, 0);
 
- //                   Logger.json(jsonString);
+                    //                   Logger.json(jsonString);
 
                     break;
 
@@ -241,43 +240,61 @@ public class ScanListFragment extends BasetFragment {
         String address = bleDevice.getMacAddress();
         DeviceInfo deviceInfo = new DeviceInfo();
         iBeaconClass.iBeacon ibeacon = iBeaconClass.fromScanData(rxBleScanResult.getBleDevice().getBluetoothDevice(), rxBleScanResult.getRssi(), rxBleScanResult.getScanRecord());
-        if (ibeacon != null && ibeacon.rssi != 127 && ibeacon.rssi != 0) {
+        if (ibeacon != null && ibeacon.rssi < 0) {
             switch (address) {
                 case "78:A5:04:53:31:D0":
-                    Logger.d("111");
-                    Logger.d(address + "->\t" +ibeacon.rssi+ "\t"+  rssiUtilD0.Filter(ibeacon.rssi));
-                    deviceInfo.setRssi(rssiUtilD0.Filter(ibeacon.rssi));
+
+                    deviceInfo.setRssi(ibeacon.rssi);
+
+//                    Logger.d(address + "->\t" +ibeacon.rssi+ "\t"+  rssiUtilD0.Filter(ibeacon.rssi));
+//                    deviceInfo.setRssi(rssiUtilD0.Filter(ibeacon.rssi));
                     break;
                 case "78:A5:04:53:26:0C":
-                    Logger.d("222");
+                    deviceInfo.setRssi(ibeacon.rssi);
 
-                    Logger.d(address + "->\t" +ibeacon.rssi+ "\t"+  rssiUtil0C.Filter(ibeacon.rssi));
-
-                    deviceInfo.setRssi(rssiUtil0C.Filter(ibeacon.rssi));
                     break;
                 case "D0:39:72:BF:4F:4E":
-                    Logger.d("333");
-                    Logger.d(address + "->\t" +ibeacon.rssi+ "\t"+ rssiUtil4E.Filter(ibeacon.rssi));
+                    deviceInfo.setRssi(ibeacon.rssi);
 
-                    deviceInfo.setRssi(rssiUtil4E.Filter(ibeacon.rssi));
+
                     break;
                 case "78:A5:04:53:1C:47":
-                    Logger.d("444");
+                    String filePath = Environment.getExternalStorageDirectory() + "/bluetoothdata.txt";
+                    String oldContent = FileUtils.readString(filePath, "utf-8");
 
-                    Logger.d(address + "->\t" +ibeacon.rssi+ "\t"+ rssiUtil47.Filter(ibeacon.rssi));
+                    FileUtils.writeString(filePath, oldContent + ibeacon.rssi + "\t", "utf-8");
 
-                    deviceInfo.setRssi(rssiUtil47.Filter(ibeacon.rssi));
+                    map.put("xhat", initXhat);
+                    map.put("P", initP);
+                    map.put("data", (double) ibeacon.rssi);
+                    Map<String, Double> tempMap = myKalman.calc(map, firstFlag);
+                    firstFlag = true;
+                    DecimalFormat df = new DecimalFormat("######0"); //四色五入转换成整数
+                    Logger.d("rssi:" + ibeacon.rssi + "\t" + df.format(tempMap.get("xhat")));
+                    initP = tempMap.get("P");
+                    initXhat = tempMap.get("xhat");
+                    deviceInfo.setRssi(Integer.valueOf(df.format(initXhat)));
+
+
+                    String filePathKalman = Environment.getExternalStorageDirectory() + "/bluetoothdataKalman.txt";
+                    String oldContentKalman = FileUtils.readString(filePathKalman, "utf-8");
+                    FileUtils.writeString(filePathKalman, oldContentKalman + df.format(tempMap.get("xhat")) + "\t", "utf-8");
+
+                    String filePathAve = Environment.getExternalStorageDirectory() + "/bluetoothdataAve.txt";
+                    String oldContentAve = FileUtils.readString(filePathAve, "utf-8");
+                    FileUtils.writeString(filePathAve, oldContentAve + (-1)*rssiUtilD0.Filter(ibeacon.rssi) + "\t", "utf-8");
+
+
                     break;
                 case "D0:39:72:BF:50:DF":
-                    Logger.d("555");
-                    Logger.d(address + "->\t" +ibeacon.rssi+"\t"+ rssiUtilDF.Filter(ibeacon.rssi));
+                    deviceInfo.setRssi(ibeacon.rssi);
 
-                    deviceInfo.setRssi(rssiUtilDF.Filter(ibeacon.rssi));
+
                     break;
                 default:
                     Logger.d("666");
 
-                    deviceInfo.setRssi(ibeacon.rssi);
+                    deviceInfo.setRssi(-100);
                     break;
             }
 
@@ -285,8 +302,6 @@ public class ScanListFragment extends BasetFragment {
             if (ibeacon.bluetoothAddress.equals("D0:39:72:BF:4F:4E")) {
                 Logger.d("ibeacon:" + ibeacon.bluetoothAddress + "     " + ibeacon.rssi);
             }
-
-            deviceInfo.setRssi(ibeacon.rssi);
 
             deviceInfo.setMac(bleDevice.getMacAddress());
             deviceInfo.setMajor("" + ibeacon.major);
@@ -309,16 +324,6 @@ public class ScanListFragment extends BasetFragment {
         mDeviceInfos = new ArrayList<DeviceInfo>();
 
 
-        if(isSDCardEnable()){
-            String path = "/mnt/sdcard/ddd.txt";
-
-            Logger.d("path:"+Environment.getExternalStorageDirectory());
-            path = Environment.getExternalStorageDirectory()+"ddd.txt";
-            FileUtils.createIfNotExist(path);
-            FileUtils.writeString(path,"ddd","utf-8");
-
-            //....
-        }
 //
 //
 //        for (int i=0;i<3;i++){
