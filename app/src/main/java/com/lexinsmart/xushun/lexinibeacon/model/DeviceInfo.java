@@ -37,7 +37,7 @@ public class DeviceInfo {
     private String minor;
     private String mac;
     private String uuid;
-    private String power;
+    private Integer power;
     private Integer rssi;
 
     public String getPrefix() {
@@ -88,11 +88,11 @@ public class DeviceInfo {
         this.uuid = uuid;
     }
 
-    public String getPower() {
+    public Integer getPower() {
         return power;
     }
 
-    public void setPower(String power) {
+    public void setPower(Integer power) {
         this.power = power;
     }
 

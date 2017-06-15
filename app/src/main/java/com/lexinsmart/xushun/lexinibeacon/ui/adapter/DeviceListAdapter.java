@@ -60,13 +60,11 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         holder.tvMajor.setText(mDatas.get(position).getMajor());
         holder.tvMinor.setText(mDatas.get(position).getMinor());
         holder.tvMac.setText(mDatas.get(position).getMac());
-        holder.tvPower.setText(mDatas.get(position).getPower());
         holder.tvRssi.setText(""+mDatas.get(position).getRssi());
 
         if (mDatas.get(position).getRssi() != null){
-            Double distance = RssiUtil.getDistance(mDatas.get(position).getRssi());
+            Double distance = RssiUtil.getDistance(mDatas.get(position).getRssi(),mDatas.get(position).getPower());
             holder.tvDistance.setText(String.valueOf(distance));
-
         }
 
 

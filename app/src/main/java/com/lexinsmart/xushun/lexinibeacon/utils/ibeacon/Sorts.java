@@ -1,8 +1,10 @@
 package com.lexinsmart.xushun.lexinibeacon.utils.ibeacon;
 
 import com.lexinsmart.xushun.lexinibeacon.model.DeviceInfo;
+import com.lexinsmart.xushun.lexinibeacon.model.Round;
 import com.orhanobut.logger.Logger;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
@@ -20,5 +22,21 @@ public class Sorts implements Comparator {
         }else {
             return 1;
         }
+    }
+    public static ArrayList<Round> sortRound(ArrayList<Round> rounds) {
+
+        Round roundTemp = new Round(0, 0, 0);
+        for (int i = 0; i < rounds.size() - 1; i++) {
+            for (int j = 0; j < rounds.size() - 1 - i; j++) {
+                Round roundj = rounds.get(j);
+                Round roundj1 = rounds.get(j + 1);
+                if (roundj.getR() > roundj1.getR()) {
+                    roundTemp = roundj;
+                    rounds.set(j, roundj1);
+                    rounds.set(j + 1, roundTemp);
+                }
+            }
+        }
+        return rounds;
     }
 }

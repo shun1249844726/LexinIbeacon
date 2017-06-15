@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class KalmanFilter {
 
-    private final double Q = 0.0001;
+    private final double Q = 0.00002;
     private final double R = 0.001;
     private double Z ;
     private double xhat;
