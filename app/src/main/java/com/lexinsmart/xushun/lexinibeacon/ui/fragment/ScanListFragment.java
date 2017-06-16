@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,6 @@ import java.util.Map;
 
 import rx.Subscription;
 
-import static com.lexinsmart.xushun.lexinibeacon.utils.file.SDCardUtils.isSDCardEnable;
 import static com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.Sorts.sortRound;
 
 /**
@@ -240,9 +238,9 @@ public class ScanListFragment extends BasetFragment {
                     String jsonString = JSON.toJSONString(baseStationBean);
                     MqttV3Service.publishMsg(jsonString, 1, 0);
 
-                    Round round1 = new Round(0, 0, 1.73);
-                    Round round2 = new Round(2.1, 2.4, 1);
-                    Round round3 = new Round(4.2, 0, 2.27);
+                    Round round1 = new Round(0, 0, 0);
+                    Round round2 = new Round(2.1, 2.4, 0);
+                    Round round3 = new Round(4.2, 0, 0);
                     ArrayList<Round> rounds = new ArrayList<>();
                     rounds.add(round1);
                     rounds.add(round2);
@@ -255,14 +253,27 @@ public class ScanListFragment extends BasetFragment {
                         for (int j = 0; j < size; j++) {
                             if (mDeviceInfos.get(j).getRssi() != null) {
                                 Double distance = RssiUtil.getDistance(mDeviceInfos.get(j).getRssi(), mDeviceInfos.get(j).getPower());
-                                rounds.get(j).setR(distance);
+                                if (mDeviceInfos.get(j).getMac().equals("78:A5:04:53:31:D0")){
+                                    rounds.get(2).setR(distance);
+                                    rounds.get(2).setX(4.2);
+                                    rounds.get(2).setY(0);
+                                }else if (mDeviceInfos.get(j).getMac().equals("D0:39:72:BF:50:DF")){
+                                    rounds.get(1).setR(distance);
+                                    rounds.get(1).setX(2.4);
+                                    rounds.get(1).setY(2.1);
+                                }else {
+                                    rounds.get(0).setR(distance);
+                                    rounds.get(0).setX(0);
+                                    rounds.get(0).setY(0);
+                                }
                             }
                         }
 
-                        rounds = sortRound(rounds);
+                        rounds = Sorts.sortRound(rounds);
                         MyCalculate myCalculate = new MyCalculate();
-                        Coordinate positionPoint = myCalculate.triCentroid(rounds.get(0), rounds.get(1), rounds.get(2));
-                        System.out.println("position:" + positionPoint.getX() + "\t" + positionPoint.getY() + "\t "+rounds.get(0).getR()+ "\t "+rounds.get(1).getR()+ "\t "+rounds.get(2).getR());
+                        Coordinate positionPoint = new Coordinate();
+                        positionPoint = myCalculate.triCentroid(rounds.get(0), rounds.get(1), rounds.get(2));
+                        System.out.println("position:" + size+ "\t"+ positionPoint.toString() + "\t "+rounds.get(0).getR()+ "\t "+rounds.get(1).getR()+ "\t "+rounds.get(2).getR());
 
                         String filePath = Environment.getExternalStorageDirectory() + "/bluetoothdata.txt";
                         String oldContent = FileUtils.readString(filePath, "utf-8");
@@ -414,7 +425,7 @@ public class ScanListFragment extends BasetFragment {
         mDeviceInfos = new ArrayList<DeviceInfo>();
 
 
-//
+
 //
 //        for (int i=0;i<3;i++){
 //            DeviceInfo deviceInfo_1 = new DeviceInfo();

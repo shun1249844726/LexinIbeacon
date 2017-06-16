@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(mOnPageChangeListener);
 
         setupViewPager(mViewPager);
+        mViewPager.setCurrentItem(1);
 
         RxPermissions rxPermissions = new RxPermissions(this);
         rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -118,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(ScanListFragment.newInstance("1"));
+     //   adapter.addFragment(ScanListFragment.newInstance("1"));
+        adapter.addFragment(ApplicationScenariosFragment.newInstance("1"));
         adapter.addFragment(DeviceFragment.newInstance("2"));
         adapter.addFragment(ApplicationScenariosFragment.newInstance("3r"));
 

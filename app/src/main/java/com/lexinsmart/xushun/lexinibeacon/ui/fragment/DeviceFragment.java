@@ -15,8 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lexinsmart.xushun.lexinibeacon.R;
+import com.lexinsmart.xushun.lexinibeacon.model.BasesBean;
 import com.lexinsmart.xushun.lexinibeacon.model.DeviceInfo;
 import com.lexinsmart.xushun.lexinibeacon.ui.adapter.DeviceListAdapter;
+import com.lexinsmart.xushun.lexinibeacon.ui.views.PositionBg;
 import com.orhanobut.logger.Logger;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -32,13 +34,13 @@ import butterknife.Unbinder;
  * Created by xushun on 2017/5/23.
  */
 
-public class DeviceFragment extends Fragment {
+public class DeviceFragment extends BasetFragment {
 
-    DeviceListAdapter mAdapter;
-    private List<Integer> mDatas;
     static Context mContext;
-    private List<DeviceInfo> mDeviceInfos;
 
+    BasesBean basesBean = new BasesBean();
+    List<BasesBean.BaseBean> base = new ArrayList<>();
+    PositionBg mPositionBg;
     public static DeviceFragment newInstance(String info) {
         Bundle args = new Bundle();
         DeviceFragment deviceFragment = new DeviceFragment();
@@ -51,40 +53,27 @@ public class DeviceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fl_device_list, null);
-        TextView tvInfo = (TextView) view.findViewById(R.id.tv_fl_devicelist);
-        RecyclerView mRvDeviceScanList = (RecyclerView) view.findViewById(R.id.rv_device_scan_list);
+        View view = inflater.inflate(R.layout.fl_device_location, null);
+        TextView tvInfo = (TextView) view.findViewById(R.id.tv_fl_device_title);
+
+
+        mPositionBg = (PositionBg) view.findViewById(R.id.basesPosition);
 
         tvInfo.setText(getArguments().getString("info"));
         tvInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Snackbar.make(v, "Don't click me.please!.", Snackbar.LENGTH_SHORT).show();
+                basesBean.getBase().get(0).setR(basesBean.getBase().get(0).getR()+1);
             }
         });
 
-
         initDatas();
-        mAdapter = new DeviceListAdapter(mContext, mDeviceInfos);
 
-        //设置布局管理器
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRvDeviceScanList.setLayoutManager(linearLayoutManager);
-
-        //设置适配器
-        mRvDeviceScanList.setAdapter(mAdapter);
-
-        mAdapter.setOnItemClickListener(sOnItemClickListener);
         return view;
 
     }
-    private static DeviceListAdapter.OnItemClickListener sOnItemClickListener = new DeviceListAdapter.OnItemClickListener() {
 
-        @Override
-        public void onClick(int position) {
-        }
-    };
 
     @Override
     public void onDestroyView() {
@@ -98,18 +87,38 @@ public class DeviceFragment extends Fragment {
         this.mContext = context;
     }
 
+    @Override
+    protected void appBluetoothReady(boolean ready, int status) {
+
+
+    }
+
     private void initDatas() {
 
-        mDeviceInfos = new ArrayList<DeviceInfo>();
+        BasesBean.BaseBean baseBean = new BasesBean.BaseBean();
+        baseBean.setBasemac("1");
+        baseBean.setBasex(0);
+        baseBean.setBasey(0);
+        baseBean.setR(1);
 
+        BasesBean.BaseBean baseBean2 = new BasesBean.BaseBean();
+        baseBean2.setBasemac("2");
+        baseBean2.setBasex(4.2);
+        baseBean2.setBasey(0);
+        baseBean2.setR(1);
 
-        for (int i=0;i<3;i++){
-            DeviceInfo deviceInfo_1 = new DeviceInfo();
-            deviceInfo_1.setMac("mac1");
-            deviceInfo_1.setMajor("major");
-            deviceInfo_1.setDeviceName("name"+i);
-            mDeviceInfos.add(deviceInfo_1);
-        }
+        BasesBean.BaseBean baseBean3 = new BasesBean.BaseBean();
+        baseBean3.setBasemac("3");
+        baseBean3.setBasex(2.1);
+        baseBean3.setBasey(2.1);
+        baseBean3.setR(1);
+
+        base.add(baseBean);
+        base.add(baseBean2);
+        base.add(baseBean3);
+        basesBean.setBase(base);
+
+        mPositionBg.setData(basesBean);
 
     }
 }
