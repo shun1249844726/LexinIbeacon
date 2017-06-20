@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.lexinsmart.xushun.lexinibeacon.model.BasesBean;
+import com.lexinsmart.xushun.lexinibeacon.model.Coordinate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class PositionBg extends View {
     private float mWidth, mHeight;
     BasesBean basesBean = new BasesBean();
     List<BasesBean.BaseBean> base = new ArrayList<>();
+    Coordinate mylocationCoor = new Coordinate();
 
     public PositionBg(Context context) {
         this(context, null);
@@ -84,6 +86,12 @@ public class PositionBg extends View {
         textPaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextSize(20);
 
+        LocationPoint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        LocationPoint.setColor(Color.YELLOW);
+        LocationPoint.setAntiAlias(true);
+        LocationPoint.setStyle(Paint.Style.FILL_AND_STROKE);
+        LocationPoint.setStrokeWidth(10);
+
     }
 
     @Override
@@ -91,6 +99,13 @@ public class PositionBg extends View {
         super.onDraw(canvas);
         drawBases(canvas);
         drawDistances(canvas);
+        drawLocation(canvas);
+    }
+
+    private void drawLocation(Canvas canvas) {
+
+        canvas.drawCircle(setX(mylocationCoor.getX()),setY(mylocationCoor.getY()),20,LocationPoint);
+        handler.sendEmptyMessageDelayed(0,1000);
     }
 
     private void drawDistances(Canvas canvas) {
@@ -139,6 +154,10 @@ public class PositionBg extends View {
     public void  setData( BasesBean base ){
 
         this.basesBean = base;
+    }
+    public void setLocationPoint(Coordinate coordinate){
+        this.mylocationCoor = coordinate;
+
     }
 
     private Handler handler = new Handler(Looper.getMainLooper()){
