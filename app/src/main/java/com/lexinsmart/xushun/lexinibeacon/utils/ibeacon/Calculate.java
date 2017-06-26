@@ -2,6 +2,8 @@ package com.lexinsmart.xushun.lexinibeacon.utils.ibeacon;
 
 import com.lexinsmart.xushun.lexinibeacon.model.Coordinate;
 import com.lexinsmart.xushun.lexinibeacon.model.Round;
+import com.lexinsmart.xushun.lexinibeacon.utils.cg.CGLine;
+import com.lexinsmart.xushun.lexinibeacon.utils.cg.CGPoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +11,6 @@ import java.util.List;
 /**
  * Created by xushun on 2017/6/20.
  */
-
 
 public class Calculate {
     /**
@@ -38,11 +39,11 @@ public class Calculate {
                 r2.getR());
 
         if (intersections1 != null && !intersections1.isEmpty()) {
-            System.out.println("r1,r2交点");
+//            System.out.println("r1,r2交点");
             if (intersections1.size() == 1) {
                 p1 = intersections1.get(0);
-                System.out.println("r1,r2相切");
-                System.out.println("r1,r2 相信：" + p1.toString());
+//                System.out.println("r1,r2相切");
+//                System.out.println("r1,r2 相信：" + p1.toString());
 
             } else {
                 if (Math.pow(intersections1.get(0).getX() - r3.getX(), 2)
@@ -52,15 +53,15 @@ public class Calculate {
                     p1 = intersections1.get(0);
                 } else {
                     p1 = intersections1.get(1);
-
                 }
-                System.out.println("r1,r2 相信：" + p1.toString());
+//                System.out.println("r1,r2 相信：" + p1.toString());
 
             }
         } else {// 没有交点定位错误
-            System.out.println("r1 r2 没有交点");
-            p1.setX((r1.getX() + r2.getX()) / 2);
-            p1.setY((r1.getY() + r2.getY()) / 2);
+//            System.out.println("r1 r2 没有交点");
+            p1 = getMidCoordinate(r1,r2);
+
+
             // return null;
         }
 
@@ -69,11 +70,11 @@ public class Calculate {
                 r3.getR());
 
         if (intersections2 != null && !intersections2.isEmpty()) {
-            System.out.println("r1,r3交点");
+//            System.out.println("r1,r3交点");
             if (intersections2.size() == 1) {
                 p2 = intersections2.get(0);
-                System.out.println("r1,r3相切");
-                System.out.println("r1,r3 相信：" + p2.toString());
+//                System.out.println("r1,r3相切");
+//                System.out.println("r1,r3 相信：" + p2.toString());
 
             } else {
                 if (Math.pow(intersections2.get(0).getX() - r2.getX(), 2)
@@ -86,14 +87,13 @@ public class Calculate {
                     p2 = intersections2.get(1);
 
                 }
-                System.out.println("r1,r3相信：" + p2.toString());
+//                System.out.println("r1,r3相信：" + p2.toString());
 
             }
 
         } else {// 没有交点定位错误
-            System.out.println("r1  r3 没有交点");
-            p2.setX((r1.getX() + r3.getX()) / 2);
-            p2.setY((r1.getY() + r3.getY()) / 2);
+//            System.out.println("r1  r3 没有交点");
+            p2 = getMidCoordinate(r1, r3);
             // return null;
         }
 
@@ -102,11 +102,11 @@ public class Calculate {
                 r3.getR());
 
         if (intersections3 != null && !intersections3.isEmpty()) {
-            System.out.println("r2,r3交点");
+//            System.out.println("r2,r3交点");
             if (intersections3.size() == 1) {
                 p3 = intersections3.get(0);
-                System.out.println("r2,r3相切");
-                System.out.println("r2,r3 相信：" + p3.toString());
+//                System.out.println("r2,r3相切");
+//                System.out.println("r2,r3 相信：" + p3.toString());
 
             } else {
                 if (Math.pow(intersections3.get(0).getX() - r1.getX(), 2)
@@ -119,14 +119,13 @@ public class Calculate {
                     p3 = intersections3.get(1);
 
                 }
-                System.out.println("r2, r3相信：" + p3.toString());
+//                System.out.println("r2, r3相信：" + p3.toString());
 
             }
 
         } else {// 没有交点定位错误
-            System.out.println("r2  r3 没有交点");
-            p3.setX((r2.getX() + r3.getX()) / 2);
-            p3.setY((r2.getY() + r3.getY()) / 2);
+//            System.out.println("r2  r3 没有交点");
+            p3 = getMidCoordinate(r2, r3);
 
             // return null;
         }
@@ -136,6 +135,73 @@ public class Calculate {
         centroid.setY((p1.getY() + p2.getY() + p3.getY()) / 3);
 
         return centroid;
+    }
+
+    private static Coordinate getMidCoordinate(Round r1, Round r2) {
+
+        Coordinate midCoor = new Coordinate();
+
+        CGPoint centerR1 = new CGPoint(r1.getX(),r1.getY());
+        CGPoint centerR2 = new CGPoint(r2.getX(),r2.getY());
+
+        CGLine cgLine = new CGLine(centerR1, centerR2);
+        if(cgLine.iskExists() ){
+            double degree = Math.toDegrees(Math.atan(cgLine.k));  //由斜率到角度
+            double radians = Math.toRadians(degree);  //角度转弧度
+//            System.out.println("角度："+degree);
+            Double dxR1 = r1.getR()* Math.cos(radians);  //根据角度 算出来 r1两点的偏移量
+            Double dyR1 = r1.getR()* Math.sin(radians);
+
+
+            Double dxR2 = r2.getR()* Math.cos(radians);  //根据角度 算出来 r2两点的偏移量
+            Double dyR2 = r2.getR()* Math.sin(radians);
+//            System.out.println("dx1 :\t"+dxR1 +"\t"+dyR1);
+//            System.out.println("dx2 :\t"+dxR2 +"\t"+dyR2);
+
+            Coordinate r1p1 = new Coordinate();
+            r1p1.setX(r1.getX() - dxR1);
+            r1p1.setY(r1.getY() - dyR1);
+//            System.out.println("r1p1:\t"+r1p1.getX() +"\t"+r1p1.getY());
+
+
+            Coordinate r1p2 = new Coordinate();
+            r1p2.setX(r1.getX() + dxR1);
+            r1p2.setY(r1.getY() + dyR1);
+//            System.out.println("r1p2:\t"+r1p2.getX() +"\t"+r1p2.getY());
+
+
+            Coordinate r2p1 = new Coordinate();
+            r2p1.setX(r2.getX() - dxR2);
+            r2p1.setY(r2.getY() - dyR2);
+//            System.out.println("r2p1:\t"+r2p1.getX() +"\t"+r2p1.getY());
+
+
+            Coordinate r2p2 = new Coordinate();
+            r2p2.setX(r2.getX() + dxR2);
+            r2p2.setY(r2.getY() + dyR2);
+//            System.out.println("r2p2:\t"+r2p2.getX() +"\t"+r2p2.getY());
+
+            if(r1.getX()<r2.getX()){
+//                System.out.println("取点：   r1p2:\t"+r1p2.getX() +"\t"+r1p2.getY());
+//                System.out.println("取点：   r2p1:\t"+r2p1.getX() +"\t"+r2p1.getY());
+                midCoor.setX((r1p2.getX() + r2p1.getX())/2);
+                midCoor.setY((r1p2.getY() + r2p1.getY())/2);
+
+
+
+            }else{
+//                System.out.println("取点：   r1p1:\t"+r1p1.getX() +"\t"+r1p1.getY());
+//                System.out.println("取点：   r2p2:\t"+r2p2.getX() +"\t"+r2p2.getY());
+                midCoor.setX((r1p1.getX() + r2p2.getX())/2);
+                midCoor.setY((r1p1.getY() + r2p2.getY())/2);
+            }
+//            System.out.println("中点:\t"+midCoor.getX() +"\t"+midCoor.getY());
+
+        }
+
+        return midCoor;
+        // TODO Auto-generated method stub
+
     }
 
     /**

@@ -206,7 +206,6 @@ public class DeviceFragment extends BasetFragment {
     @Override
     public void onPause() {
         super.onPause();
-        search_timer.getLooper().quit();
     }
 
     /**
