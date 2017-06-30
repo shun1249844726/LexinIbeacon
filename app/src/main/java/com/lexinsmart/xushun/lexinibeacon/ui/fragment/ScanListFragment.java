@@ -25,7 +25,6 @@ import com.lexinsmart.xushun.lexinibeacon.model.Round;
 import com.lexinsmart.xushun.lexinibeacon.ui.adapter.DeviceListAdapter;
 import com.lexinsmart.xushun.lexinibeacon.utils.file.FileUtils;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.KalmanFilter;
-import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.MyCalculate;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.RssiUtil;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.Sorts;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.iBeaconClass;
@@ -43,8 +42,6 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Subscription;
-
-import static com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.Sorts.sortRound;
 
 /**
  * Created by xushun on 2017/5/25.

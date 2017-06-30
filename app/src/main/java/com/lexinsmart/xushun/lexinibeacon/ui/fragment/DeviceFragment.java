@@ -1,55 +1,40 @@
 package com.lexinsmart.xushun.lexinibeacon.ui.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.lexinsmart.xushun.lexinibeacon.R;
-import com.lexinsmart.xushun.lexinibeacon.model.BaseStationBean;
 import com.lexinsmart.xushun.lexinibeacon.model.BasesBean;
 import com.lexinsmart.xushun.lexinibeacon.model.Coordinate;
 import com.lexinsmart.xushun.lexinibeacon.model.DeviceInfo;
 import com.lexinsmart.xushun.lexinibeacon.model.Round;
-import com.lexinsmart.xushun.lexinibeacon.ui.adapter.DeviceListAdapter;
 import com.lexinsmart.xushun.lexinibeacon.ui.views.PositionBg;
 import com.lexinsmart.xushun.lexinibeacon.utils.file.FileUtils;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.Calculate;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.KalmanFilter;
-import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.MyCalculate;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.RssiUtil;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.Sorts;
 import com.lexinsmart.xushun.lexinibeacon.utils.ibeacon.iBeaconClass;
-import com.lexinsmart.xushun.lexinibeacon.utils.mqtt.MqttV3Service;
 import com.orhanobut.logger.Logger;
 import com.polidea.rxandroidble.RxBleDevice;
 import com.polidea.rxandroidble.RxBleScanResult;
-import com.sdsmdg.tastytoast.TastyToast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import rx.Subscription;
 
 /**
